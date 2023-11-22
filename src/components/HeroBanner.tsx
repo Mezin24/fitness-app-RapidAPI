@@ -33,11 +33,15 @@ export const HeroBanner = () => {
       </Button>
       <Typography
         fontWeight={600}
-        color='#ff2625'
-        sx={{ opacity: 0.1, display: { lg: 'block', xs: 'none' } }}
-        mb='23px'
-        mt='30px'
-      ></Typography>
+        color='#FF2625'
+        sx={{
+          opacity: '0.1',
+          display: { lg: 'block', xs: 'none' },
+          fontSize: '200px',
+        }}
+      >
+        Exercise
+      </Typography>
       <img src={HeroBannerImg} alt='banner' className='hero-banner-img' />
     </Box>
   );
