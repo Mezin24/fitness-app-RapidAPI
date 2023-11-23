@@ -1,50 +1,20 @@
-import { useState, useCallback, useEffect } from 'react';
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import { useCallback } from 'react';
+import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import {
-  BODY_PEARTS_URL,
-  EXERCISES_OPTIONS,
-  EXERCISES_URL,
-  fetchData,
-} from '../utils/fetchData';
-import { Exercise } from '../types';
+  exerciseActions,
+  fetchExercises,
+} from '../store/exercise/exersiceSlice';
 import { HorizontalScrollbar } from './HorizontalScrollbar';
 
 export const SearchExercises = () => {
-  const [search, setSearch] = useState('');
-  const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [bodyParts, setBodyParts] = useState<string[]>([]);
+  const { search, bodyParts } = useAppSelector((state) => state.exercise);
+  const dispatch = useAppDispatch();
 
   const handleSearch = useCallback(async () => {
     if (!search) return;
-    const exerciseData: Exercise[] = await fetchData(
-      EXERCISES_URL,
-      EXERCISES_OPTIONS
-    );
-
-    const searchedExercises = exerciseData.filter(
-      (exercise) =>
-        exercise.name.toLowerCase().includes(search) ||
-        exercise.bodyPart.toLowerCase().includes(search) ||
-        exercise.equipment.toLowerCase().includes(search) ||
-        exercise.target.toLowerCase().includes(search)
-    );
-
-    setSearch('');
-    setExercises(searchedExercises);
-  }, [search]);
-
-  useEffect(() => {
-    const fetchedExerciseData = async () => {
-      const bodyParts: string[] = await fetchData(
-        BODY_PEARTS_URL,
-        EXERCISES_OPTIONS
-      );
-      if (!bodyParts) return;
-      setBodyParts(['all', ...bodyParts]);
-    };
-
-    fetchedExerciseData();
-  }, []);
+    await dispatch(fetchExercises());
+  }, [dispatch, search]);
 
   return (
     <Stack alignItems={'center'} justifyContent='center' mt='37px' p='20px'>
@@ -61,7 +31,11 @@ export const SearchExercises = () => {
       <Box position='relative' mb='72px'>
         <TextField
           value={search}
-          onChange={(e) => setSearch(e.target.value.toLocaleLowerCase())}
+          onChange={(e) =>
+            dispatch(
+              exerciseActions.setSearch(e.target.value.toLocaleLowerCase())
+            )
+          }
           placeholder='Search Exercises'
           type='text'
           sx={{
