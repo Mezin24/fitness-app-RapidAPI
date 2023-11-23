@@ -50,6 +50,31 @@ export const fetchExercises = createAsyncThunk(
   }
 );
 
+export const fetchExercisesByBodypart = createAsyncThunk(
+  'exercise/fetchExercisesByBodypart',
+  async (_, { getState }) => {
+    const {
+      exercise: { bodyPart, search },
+    } = getState() as StateSchema;
+    const exercises: Exercise[] = await fetchData(
+      `https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}?limit=100`,
+      EXERCISES_OPTIONS
+    );
+
+    if (search) {
+      const searchedExercises = exercises.filter(
+        (exercise) =>
+          exercise.name.toLowerCase().includes(search) ||
+          exercise.bodyPart.toLowerCase().includes(search) ||
+          exercise.equipment.toLowerCase().includes(search) ||
+          exercise.target.toLowerCase().includes(search)
+      );
+      return searchedExercises;
+    }
+    return exercises;
+  }
+);
+
 export const fetchBodyParts = createAsyncThunk(
   'exercise/fetchBodyParts',
   async () => {
@@ -82,6 +107,9 @@ export const ExerciseSlice = createSlice({
     });
     builder.addCase(fetchBodyParts.fulfilled, (state, action) => {
       state.bodyParts = ['all', ...action.payload];
+    });
+    builder.addCase(fetchExercisesByBodypart.fulfilled, (state, action) => {
+      state.exercises = action.payload;
     });
   },
 });

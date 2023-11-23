@@ -15,7 +15,10 @@ export const HorizontalScrollbar = ({ data }: HorizontalScrollbarProps) => {
       {data.map((item) => (
         <Box
           key={item}
-          onClick={() => dispatch(exerciseActions.setBodyPart(item))}
+          onClick={() => {
+            dispatch(exerciseActions.setBodyPart(item));
+            window.scrollTo({ top: 1500, left: 100, behavior: 'smooth' });
+          }}
           p='10px 22px'
           sx={
             bodyPart === item
