@@ -11,10 +11,9 @@ export const SearchExercises = () => {
   const { search, bodyParts } = useAppSelector((state) => state.exercise);
   const dispatch = useAppDispatch();
 
-  const handleSearch = useCallback(async () => {
-    if (!search) return;
-    await dispatch(fetchExercises());
-  }, [dispatch, search]);
+  const handleSearch = useCallback(() => {
+    dispatch(fetchExercises());
+  }, [dispatch]);
 
   return (
     <Stack alignItems={'center'} justifyContent='center' mt='37px' p='20px'>

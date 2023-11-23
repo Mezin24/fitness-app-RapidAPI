@@ -36,6 +36,7 @@ export const fetchExercises = createAsyncThunk(
     const {
       exercise: { search },
     } = getState() as StateSchema;
+
     if (search) {
       const searchedExercises = exercises.filter(
         (exercise) =>
@@ -44,7 +45,8 @@ export const fetchExercises = createAsyncThunk(
           exercise.equipment.toLowerCase().includes(search) ||
           exercise.target.toLowerCase().includes(search)
       );
-      dispatch(exerciseActions.setFilteredExercises(searchedExercises));
+      dispatch(exerciseActions.setSearch(''));
+      return searchedExercises;
     }
     return exercises;
   }
@@ -95,10 +97,6 @@ export const ExerciseSlice = createSlice({
     },
     setSearch: (state, action: PayloadAction<string>) => {
       state.search = action.payload;
-    },
-    setFilteredExercises: (state, action: PayloadAction<Exercise[]>) => {
-      state.filteredExercises = action.payload;
-      state.search = '';
     },
   },
   extraReducers: (builder) => {
